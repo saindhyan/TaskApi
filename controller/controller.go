@@ -6,13 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func Routes()*gin.Engine {
+func Routes() *gin.Engine {
 	r := gin.Default()
-	r.POST("/task", service.CreateTask)
-	r.GET("/task/:id", service.GetTaskbyid)
-	r.GET("/task", service.GetTask)
-	r.PUT("/task/:id", service.UpdateTask)
-	r.DELETE("/task/:id", service.DeleteTask)
+	r.POST("/tasks", service.CreateTask)
+	r.GET("/tasks/:id", service.GetTaskbyid)
+	r.GET("/tasks", service.GetTask)
+	r.PUT("/tasks/:id", service.UpdateTask)
+	r.DELETE("/tasks/:id", service.DeleteTask)
 
 	return r
 }

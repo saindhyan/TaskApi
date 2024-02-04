@@ -22,16 +22,17 @@ func CreateTask(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
-
-	result, erre := db.Exec("INSERT INTO task (title ,description ,dueDate,status) VALUES (?,?,?,?)", task.Title, task.Description, task.DueDate, task.Status)
+	pendingText := "Pending"
+	result, erre := db.Exec("INSERT INTO task (title ,description ,dueDate,status) VALUES (?,?,?,?)", task.Title, task.Description, task.DueDate, pendingText)
 	if erre != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": erre.Error()})
 		return
 	}
 
 	id, _ := result.LastInsertId()
-	task.ID = int(id)
 
+	task.ID = int(id)
+	task.Status = pendingText
 	c.JSON(http.StatusCreated, task)
 
 }
