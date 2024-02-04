@@ -64,6 +64,10 @@ func GetTaskbyid(c *gin.Context) {
 	var task Entity.Task
 	err := db.QueryRow("SELECT * FROM task WHERE id=?", id).Scan(&task.ID, &task.Title, &task.Description, &task.DueDate, &task.Status)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			c.JSON(http.StatusNotFound, gin.H{"error": "Task not found"})
+			return
+		}
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err})
 		return
 	}
@@ -80,8 +84,14 @@ func UpdateTask(c *gin.Context) {
 		return
 	}
 
-	_, err := db.Exec("UPDATE task SET title=? ,description=?,dueDate=?,status=? WHERE id=?", task.Title, task.Description, task.DueDate, task.Status, id)
+	result, err := db.Exec("UPDATE task SET title=? ,description=?,dueDate=?,status=? WHERE id=?", task.Title, task.Description, task.DueDate, task.Status, id)
+	rowsAffacted, _ := result.RowsAffected()
+	if rowsAffacted == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Task not found"})
+		return
+	}
 	if err != nil {
+
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
@@ -93,9 +103,14 @@ func UpdateTask(c *gin.Context) {
 }
 func DeleteTask(c *gin.Context) {
 	id := c.Param("id")
-
-	_, err := db.Exec("DELETE FROM task WHERE id=?", id)
+	result, err := db.Exec("DELETE FROM task WHERE id=?", id)
+	rowsAffacted, _ := result.RowsAffected()
+	if rowsAffacted == 0 {
+		c.JSON(http.StatusNotFound, gin.H{"error": "Task not found"})
+		return
+	}
 	if err != nil {
+
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
