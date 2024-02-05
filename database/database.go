@@ -7,6 +7,7 @@ import (
 
 var db *sql.DB
 
+// connection with sqlite database file
 func Connect() (*sql.DB, error) {
 	var err error
 	db, err = sql.Open("sqlite3", "./data/data.db")
@@ -17,6 +18,7 @@ func Connect() (*sql.DB, error) {
 	return db, err
 }
 
+// creating table its not exists
 func CreateTable() {
 	_, err := db.Exec(`CREATE TABLE IF NOT EXISTS task (
 		id INTEGER PRIMARY KEY AUTOINCREMENT,

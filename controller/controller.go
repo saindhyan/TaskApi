@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// api endpoints
 func Routes() *gin.Engine {
 	r := gin.Default()
 	r.POST("/tasks", service.CreateTask)
